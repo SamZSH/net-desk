@@ -63,7 +63,7 @@ export const dashboardConfig = [
     {
         key: 'reserve',
         label: '预留',
-        disabled: true,
+        disabled: false,
         visible: true,
         iconClass: 'rongqi',
         children: []
