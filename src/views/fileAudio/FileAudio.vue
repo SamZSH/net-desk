@@ -5,11 +5,18 @@
 -->
 
 <template>
-  <div>音频</div>
+  <div>
+    <FileTitle />
+    <div>音频</div>
+  </div>
 </template>
 
 <script>
+import FileTitle from '../../components/file/fileTitle/FileTitle'
 export default {
+  components: {
+    FileTitle
+  },
   name: "FileAudio"
 }
 </script>

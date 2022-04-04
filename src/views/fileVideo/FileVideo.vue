@@ -5,12 +5,17 @@
 -->
 <template>
   <div>
-    视频
+    <FileTitle />
+    <div>视频</div>
   </div>
 </template>
 
 <script>
+import FileTitle from '../../components/file/fileTitle/FileTitle'
 export default {
+  components: {
+    FileTitle
+  },
   name: "FileVideo"
 }
 </script>

@@ -5,11 +5,18 @@
 -->
 
 <template>
-  <div>压缩文件</div>
+  <div>
+    <FileTitle />
+    <div>压缩文件</div>
+  </div>
 </template>
 
 <script>
+import FileTitle from '../../components/file/fileTitle/FileTitle'
 export default {
+  components: {
+    FileTitle
+  },
   name: "FileCompressed"
 }
 </script>

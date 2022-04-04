@@ -9,6 +9,7 @@
       <el-row class="tac">
         <!-- 侧边栏 start -->
         <el-col :span="4">
+          <div class="bl-title" :style="{...dealTitleStyle}">BL-CLOUD</div>
           <el-menu
               router
               :default-active="activeKey"
@@ -19,7 +20,6 @@
               :text-color="TAB_COLOR"
               :active-text-color="TAB_COLOR_ACTIVE"
           >
-            <div class="bl-title" :style="{...dealTitleStyle}">BL-CLOUD</div>
             <div v-for="item in dashboardConfig" :key="item.key">
               <el-submenu :index="item.key" v-if="item.children.length > 0">
                 <template slot="title">
@@ -45,6 +45,9 @@
         <!-- 侧边栏 end -->
         <!-- 内容 start -->
         <el-col :span="20">
+          <div class="user-info" :style="{...dealTitleStyle}">
+            <UserInfo />
+          </div>
           <div class="content-box">
             <router-view></router-view>
           </div>
@@ -55,9 +58,13 @@
 </template>
 
 <script>
+import UserInfo from './components/UserInfo'
 import {BG_TAB,TAB_COLOR,TAB_COLOR_ACTIVE,TAB_BORDER_COLOR} from '../../style/common.js'
 import {dashboardConfig} from '../../config/dashboardConfig'
     export default {
+        components: {
+          UserInfo
+        },
         name: "DashBoard",
         data() {
             return {
@@ -119,6 +126,15 @@ import {dashboardConfig} from '../../config/dashboardConfig'
           margin-right: 16px;
           font-size: 20px;
         }
+      }
+      .user-info {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-right: 12%;
+        width: 100%;
+        height: 70px;
+        background-color: skyblue;
       }
       .content-box {
         padding: 24px;
