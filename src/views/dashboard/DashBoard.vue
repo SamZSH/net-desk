@@ -15,13 +15,12 @@
               :default-active="activeKey"
               class="el-menu-vertical"
               @select="handleSelect"
-              :default-openeds="['allFiles']"
               :background-color="BG_TAB"
               :text-color="TAB_COLOR"
               :active-text-color="TAB_COLOR_ACTIVE"
           >
             <div v-for="item in dashboardConfig" :key="item.key">
-              <el-submenu :index="item.key" v-if="item.children.length > 0">
+              <el-submenu :index="item.key" v-if="item.children.length > 0" :disabled="item.disabled">
                 <template slot="title">
                   <i class="iconfont" :class="`icon-${item.iconClass}`" />
                   <span>{{ item.label }}</span>
@@ -34,7 +33,7 @@
                 </div>
               </el-submenu>
 
-              <el-menu-item :index="item.key" v-if="item.children.length === 0 && item.visible">
+              <el-menu-item :index="item.key" v-if="item.children.length === 0 && item.visible" :disabled="item.disabled">
                 <i class="iconfont" :class="`icon-${item.iconClass}`" />
                 <span slot="title">{{ item.label }}</span>
               </el-menu-item>
