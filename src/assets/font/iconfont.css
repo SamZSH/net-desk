@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3300531 */
-  src: url('iconfont.ttf?t=1648956040205') format('truetype');
+  src: url('iconfont.ttf?t=1650166516084') format('truetype');
 }
 
 .iconfont {
@@ -9,6 +9,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-noun__cc:before {
+  content: "\e610";
 }
 
 .icon-line-folderzipyasuowenjianjia:before {

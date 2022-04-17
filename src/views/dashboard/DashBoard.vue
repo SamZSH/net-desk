@@ -14,10 +14,11 @@
               router
               :default-active="activeKey"
               class="el-menu-vertical"
-              @select="handleSelect"
               :background-color="BG_TAB"
               :text-color="TAB_COLOR"
               :active-text-color="TAB_COLOR_ACTIVE"
+              :default-openeds="['files']"
+              @select="handleSelect"
           >
             <div v-for="item in dashboardConfig" :key="item.key">
               <el-submenu :index="item.key" v-if="item.children.length > 0" :disabled="item.disabled">
@@ -61,23 +62,23 @@ import UserInfo from './components/UserInfo'
 import {BG_TAB,TAB_COLOR,TAB_COLOR_ACTIVE,TAB_BORDER_COLOR} from '../../style/common.js'
 import {dashboardConfig} from '../../config/dashboardConfig'
     export default {
-        components: {
-          UserInfo
-        },
-        name: "DashBoard",
-        data() {
-            return {
-              // 常量: start
-              dashboardConfig,
-              BG_TAB,
-              TAB_COLOR,
-              TAB_COLOR_ACTIVE,
-              TAB_BORDER_COLOR,
-              // 常量 end
+      components: {
+        UserInfo
+      },
+      name: "DashBoard",
+      data() {
+          return {
+            // 常量: start
+            dashboardConfig,
+            BG_TAB,
+            TAB_COLOR,
+            TAB_COLOR_ACTIVE,
+            TAB_BORDER_COLOR,
+            // 常量 end
 
-              activeKey: sessionStorage.getItem('tabBarActiveKey') || 'home',  // 激活菜单的key
-            };
-        },
+            activeKey: sessionStorage.getItem('tabBarActiveKey') || 'home',  // 激活菜单的key
+          };
+      },
       computed: {
         // 处理title样式
         dealTitleStyle() {

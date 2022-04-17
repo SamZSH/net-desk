@@ -20,9 +20,11 @@ import '@/style/common.js';
 // 引入全局过滤器
 import '@/config/filters.js'
 
+// 引入路由守卫
+import '@/config/routerGuard.js'
+
 // 引入animate.css
 import '@/plugins/animate.js'
-
 
 
 new Vue({

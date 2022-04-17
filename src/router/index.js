@@ -2,10 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 //引入一级组件
+import Login from './../views/login/Login.vue';
 import DashBoard from './../views/dashboard/DashBoard.vue';
 
 // 引入二级组件
 const Home = () => import('./../views/home/Home.vue');
+const FileAll = () => import('./../views/fileAll/FileAll');
 const FilePicture = () => import('./../views/filePicture/FilePicture.vue');
 const FileAudio = () => import('./../views/fileAudio/FileAudio.vue');
 const FileVideo = () => import('./../views/fileVideo/FileVideo.vue');
@@ -35,6 +37,12 @@ export default new Router({
                     path: 'home',
                     name: 'home',
                     component: Home,
+                    meta: { keepAlive: true}
+                },
+                {
+                    path: 'all-files',
+                    name: 'allFiles',
+                    component: FileAll,
                     meta: { keepAlive: true}
                 },
                 {
@@ -81,5 +89,11 @@ export default new Router({
                 },
             ]
         },
-    ]
+        {
+            path: '/login',
+            name: 'login',
+            component: Login,
+        }
+    ],
+    mode: 'history'
 });

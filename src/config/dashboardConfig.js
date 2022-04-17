@@ -8,12 +8,19 @@ export const dashboardConfig = [
         children: []
     },
     {
-        key: 'allFiles',
-        label: '所有文件',
+        key: 'files',
+        label: '文件',
         disabled: false,
         visible: true,
         iconClass: 'wenjianjia',
         children: [
+            {
+                key: 'all-files',
+                label: '所有文件',
+                disabled: false,
+                visible: true,
+                iconClass: 'noun__cc'
+            },
             {
                 key: 'pictures',
                 label: '图片',
