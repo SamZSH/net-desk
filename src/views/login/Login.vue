@@ -21,10 +21,10 @@
         <h2>登录</h2>
         <form>
           <div class="inputBox">
-            <input type="text" placeholder="用户名">
+            <input type="text" placeholder="用户名" v-model="username">
           </div>
           <div class="inputBox">
-            <input type="password" placeholder="密码">
+            <input type="password" placeholder="密码" v-model="password">
           </div>
           <div class="inputBox">
             <input type="submit" @click.prevent="reqLogin" value="登录">
@@ -36,11 +36,14 @@
 </template>
 
 <script>
-import {setStore} from "../../config/global";
+import axios from 'axios'
+import {removeStore, setStore} from "../../config/global";
 export default {
   name: "Login",
   data() {
     return {
+      username:'',
+      password:'',
       starsCount: 800, //星星数量
       distance: 900 //间距
     }
@@ -55,8 +58,41 @@ export default {
   },
   methods: {
     reqLogin() {
-      setStore('userInfo', {token: 'test'})
-      this.$router.push({path:'/dashboard/home'})
+
+      /* removeStore('userInfo')
+      axios({
+        method:'post',
+        url: `http://localhost:8080/blCloud/login?username=${this.username}&password=${this.password}`,
+        data: {
+          username:this.username,
+          password:this.password
+        },
+        headers: {'Content-Type':'multipart/form-data'}
+      }).then(({data})=>{
+        if(new RegExp('^2.*').test(data.code)){
+          setStore('userInfo', {token: data.data})
+          this.$router.push({path:'/dashboard/home'})
+        }else{
+          console.error("出错啦！"+data.msg)
+        }
+      }).catch((error)=>{
+        console.log(error)
+      }) */
+      axios.post(`http://localhost:8080/blCloud/login?username=${this.username}&password=${this.password}`,
+          {username:this.username,
+          password:this.password})
+      .then(({data}) => {
+        if(new RegExp('^2.*').test(data.code)){
+          setStore('userInfo', {token: data.data})
+          this.$router.push({path:'/dashboard/home'})
+        }else{
+          console.error("出错啦！"+data.msg)
+        }
+      })
+      .catch(err => {
+        console.error(err); 
+      })
+      // setStore('userInfo', {token: 'test'})
     }
   }
 }

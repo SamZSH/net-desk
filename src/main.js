@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router/index'
 import store from './store/index'
 import 'element-ui/lib/theme-chalk/index.css';
+import Axios from 'axios';
 Vue.config.productionTip = false;
 
 // element
@@ -25,7 +26,18 @@ import '@/config/routerGuard.js'
 
 // 引入animate.css
 import '@/plugins/animate.js'
+import { getStore } from './config/global';
 
+Axios.interceptors.request.use(
+  config => {
+      if(JSON.parse(getStore('userInfo')).token){
+        config.headers.token = JSON.parse(getStore('userInfo')).token;
+      }
+      return config;
+  },
+  err => {
+      return Promise.reject(err);
+  });
 
 new Vue({
   router,

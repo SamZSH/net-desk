@@ -9,8 +9,27 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
-  name: "PersonalSetting"
+  name: "PersonalSetting",
+  data () {
+    return {
+      userDetailInfo:{}
+    }
+  },
+  methods: {
+    
+  },
+  mounted () {
+    axios.get('http://localhost:8080/blCloud/user/userInfo',{})
+    .then(({data}) => {
+      console.log(data)
+      this.userDetailInfo=data.data;
+    })
+    .catch(err => {
+      console.error(err); 
+    })
+  }
 }
 </script>
 

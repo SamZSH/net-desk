@@ -9,10 +9,16 @@
     <FileTitle />
     <el-table
         :data="tableData"
-        style="width: 100%">
+        style="width: 75%">
       <el-table-column
           type="selection"
       />
+      <el-table-column
+          prop=""
+          label=""
+          width="50">
+          <i class="el-icon-folder"  style="margin: 0 10px; font-size: 20px; color: black"/>
+      </el-table-column>
       <el-table-column
           prop="date"
           label="日期"
@@ -27,12 +33,17 @@
           prop="address"
           label="地址">
       </el-table-column>
+      <el-table-column
+          prop=""
+          label="操作">
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
 import FileTitle from '../../components/file/fileTitle/FileTitle'
+import axios from "axios";
 export default {
   components: {
     FileTitle
@@ -71,6 +82,19 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     }
+  },
+  mounted () {
+    let param = {
+      fileType:'3',
+      parentId:''
+    }
+    axios.get('http://localhost:8080/blCloud/file/fileList',{params:param})
+    .then(({data}) => {
+      console.log(data)
+    })
+    .catch(err => {
+      console.error(err); 
+    })
   }
 }
 </script>
