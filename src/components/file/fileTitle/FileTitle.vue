@@ -17,7 +17,7 @@
           v-model="searchFile">
         <i slot="prefix" class="el-input__icon el-icon-search" />
       </el-input>
-      <el-button type="primary" round>搜索</el-button>
+      <el-button type="primary" round @click="onSearchFile">搜索</el-button>
     </div>
   </div>
 </template>
@@ -28,6 +28,11 @@ export default {
   data() {
     return {
       searchFile: ''
+    }
+  },
+  methods: {
+    onSearchFile() {
+      this.$emit('searchData',this.searchFile)
     }
   }
 }

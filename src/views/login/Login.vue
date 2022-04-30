@@ -21,13 +21,13 @@
         <h2>登录</h2>
         <form>
           <div class="inputBox">
-            <input type="text" placeholder="用户名">
+            <input type="text" placeholder="用户名" v-model="username">
           </div>
           <div class="inputBox">
-            <input type="password" placeholder="密码">
+            <input type="password" placeholder="密码" v-model="password">
           </div>
           <div class="inputBox">
-            <input type="submit" @click.prevent="reqLogin" value="登录">
+            <input type="submit" @click.prevent="toLogin" value="登录">
           </div>
         </form>
       </div>
@@ -36,11 +36,15 @@
 </template>
 
 <script>
-import {setStore} from "../../config/global";
+import {removeStore, setStore} from "../../config/global";
+
+import { reqLogin } from '../../service/api'
 export default {
   name: "Login",
   data() {
     return {
+      username: '',
+      password: '',
       starsCount: 800, //星星数量
       distance: 900 //间距
     }
@@ -54,9 +58,13 @@ export default {
     }
   },
   methods: {
-    reqLogin() {
-      setStore('userInfo', {token: 'test'})
-      this.$router.push({path:'/dashboard/home'})
+    async toLogin() {
+      const {username,password} = this;
+      const res = await reqLogin({username, password});
+      if (res.code === '200') {
+        setStore('userInfo',res.data);
+        this.$router.push('/dashboard');
+      }
     }
   }
 }
