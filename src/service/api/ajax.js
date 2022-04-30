@@ -1,5 +1,18 @@
 //封装axios
 import axios from 'axios';
+import Axios from "axios";
+import {getStore} from "../../config/global";
+
+Axios.interceptors.request.use(
+    config => {
+        if(JSON.parse(getStore('userInfo'))?.token){
+            config.headers.token = JSON.parse(getStore('userInfo'))?.token;
+        }
+        return config;
+    },
+    err => {
+        return Promise.reject(err);
+    });
 
 export default function ajax(url,data={},type="GET") {
 

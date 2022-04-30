@@ -28,17 +28,6 @@ import '@/config/routerGuard.js'
 import '@/plugins/animate.js'
 import { getStore } from './config/global';
 
-Axios.interceptors.request.use(
-  config => {
-      if(JSON.parse(getStore('userInfo')).token){
-        config.headers.token = JSON.parse(getStore('userInfo')).token;
-      }
-      return config;
-  },
-  err => {
-      return Promise.reject(err);
-  });
-
 new Vue({
   router,
   store,

@@ -27,7 +27,7 @@ export default {
       this.userDetailInfo=data.data;
     })
     .catch(err => {
-      console.error(err); 
+      console.error(err);
     })
   }
 }
