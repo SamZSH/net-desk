@@ -7,7 +7,7 @@
 <template>
   <div class="file-title-container">
     <div class="file-title-container__left">
-      <el-button type="primary">新建文件夹</el-button>
+      <el-button type="primary" @click="createFileDir">新建文件夹</el-button>
       <el-button type="primary">上传文件</el-button>
     </div>
     <div class="file-title-container__right">
@@ -33,6 +33,9 @@ export default {
   methods: {
     onSearchFile() {
       this.$emit('searchData',this.searchFile)
+    },
+    createFileDir(){
+      this.$emit('createFileDir')
     }
   }
 }

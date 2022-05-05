@@ -10,9 +10,14 @@ const appId = '23812942';
 const appSecret = '5pIrxJMi';
 
 //登录
-export const reqLogin = ({username, password})=> ajax(`${baseUrl}/login?username=${username}&password=${password}`,{username,password},"POST");
+// export const reqLogin = ({username, password})=> ajax(`${baseUrl}/login?username=${username}&password=${password}`,{username,password},"POST");
 
+//post登录
+
+export const reqLogin = ({username,password})=> ajax(`${baseUrl}/open/login`,{username,password},"POST");
 // 文件列表
 export const reqFileList = (params)=> ajax(`${baseUrl}/file/fileList`,params);
+
+export const reqCreateFileDir = ({targetId,fileName})=> ajax(`${baseUrl}/file/createNewDir`, {targetId,fileName},"POST")
 
 

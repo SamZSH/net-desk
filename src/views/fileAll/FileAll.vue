@@ -1,7 +1,7 @@
 <template>
   <div>
     
-    <FileTitle @searchData="onSearch" />
+    <FileTitle @searchData="onSearch" @createFileDir="createFileDir"/>
     <div v-show="this.record.length>1" style="heigth: 20%;display: flex;font-size:20px;margin:5px">
       <el-button @click="" type="text" size="small" style="font-size:20px">返回上一级</el-button>
       <span style="font-size:20px;margin:5px">|</span>
@@ -55,7 +55,7 @@
 <script>
 import axios from "axios";
 import FileTitle from '../../components/file/fileTitle/FileTitle'
-import {reqFileList} from '../../service/api'
+import {reqFileList,reqCreateFileDir} from '../../service/api'
 export default {
   components: {
     FileTitle
@@ -74,18 +74,6 @@ export default {
   },
   methods: {
     async initList(params = {}) {
-      /*axios.get('http://localhost:8080/blCloud/file/fileList',params)
-          .then(({data}) => {
-            if(new RegExp('^2.*').test(data.code)){
-              console.log(data)
-              this.fileList = data.data
-            }else{
-              console.error(data)
-            }
-          })
-          .catch(err => {
-            console.error(err);
-          })*/
 
       const data = await reqFileList(params)
       // const data = res.data;
@@ -108,8 +96,6 @@ export default {
       this.multipleSelection = val;
     },
     async flashFileList(row){
-      console.log(row.joinId)
-
 
       if(row.isDir){
           this.curJoinId = row.joinId
@@ -134,29 +120,56 @@ export default {
           console.log('暂时先查看文件详情。')
         }
     },
-    recordFileList(joinId,index){
+    async recordFileList(joinId,index){
       this.record.splice(index+1,this.record.length-1)
       let params = {
         parentId:joinId
       }
-      axios.get('http://localhost:8080/blCloud/file/fileList',{params})
-        .then(({data}) => {
-          if(new RegExp('^2.*').test(data.code)){
-            console.log(data)
-            this.fileList = data.data
-          }else{
-            console.error(data)
-          }
-        })
-        .catch(err => {
-          console.error(err); 
-        })
+      const data = await reqFileList(params)
+      // const data = res.data;
+      if (new RegExp('^2.*').test(data.code)) {
+        this.fileList = data.data
+      } else{
+        console.error(data)
+      }
     },
     onSearch(data) {
       this.searchContent = data;
-
       this.initList({keyWord:data});
-    }
+    },
+    createFileDir(){
+        this.$prompt('请输入文件夹名称', '新建文件夹', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+          // inputErrorMessage: '邮箱格式不正确'
+        }).then(async ({ value }) => {
+          const params = {
+            targetId:this.curJoinId,
+            fileName:value
+          }
+          const data = await reqCreateFileDir(params);
+          console.log(data);
+          if (new RegExp('^2.*').test(data.code)){
+            this.$message({
+              type: 'success',
+              message: '新建文件夹成功：' + value
+            });
+            this.initList({parentId:this.curJoinId})
+          }else {
+            this.$message({
+              type: 'error',
+              message: data.msg
+            });
+          }
+
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '取消输入'
+          });
+        });
+      }
   }
 }
 </script>

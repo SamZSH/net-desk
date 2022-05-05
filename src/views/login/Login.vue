@@ -60,7 +60,9 @@ export default {
   methods: {
     async toLogin() {
       const {username,password} = this;
+      // const res = await reqLogin({username, password});
       const res = await reqLogin({username, password});
+      console.log(res)
       if (res.code === '200') {
         setStore('userInfo',res.data);
         this.$router.push('/dashboard');
