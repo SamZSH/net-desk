@@ -35,3 +35,20 @@ export default function ajax(url,data={},type="GET") {
         });
     });
 }
+
+export function getUserImg(url){
+    return new Promise((resolve,reject) => {
+        let promise = axios.get(url,{
+            params:{
+            },
+            responseType: 'blob',   //这里是声明期望返回的数据类型，为blob
+        })
+        promise.then((response)=>{
+            //如果成功，调用resolve
+            resolve(response.data);
+        }).catch((error)=>{
+            //如果失败，不调用reject，而是提示异常信息
+            console.log(error);
+        });
+    })
+}

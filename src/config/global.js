@@ -1,3 +1,5 @@
+import fi from "element-ui/src/locale/lang/fi";
+
 export const showBack = (callback)=>{
     // 1. 变量
     let docB = document.documentElement || document.body;
@@ -226,3 +228,22 @@ export const  removeStore = (name)=>{
     if(!name) return;
     return window.localStorage.removeItem(name);
 };
+
+export const getFileIcon = (fileInfo)=>{
+    if (fileInfo.isDir == 1){
+        return 'file_dir'
+    }else {
+        if (fileInfo.fileType == 1){
+            return 'music'
+        }else if (fileInfo.fileType == 2){
+            return 'video'
+        }else if (fileInfo.fileType == 3){
+            return 'picture'
+        }else if (fileInfo.fileType == 4){
+            return 'compress'
+        }else if (fileInfo.fileType == 5){
+            return 'office'
+        }
+    }
+
+}

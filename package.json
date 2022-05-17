@@ -8,6 +8,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@babel/core": "^7.17.10",
+    "@babel/preset-env": "^7.17.10",
     "animate.css": "^3.7.2",
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
