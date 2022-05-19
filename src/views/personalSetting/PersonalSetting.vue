@@ -115,7 +115,7 @@
       </el-form>
       <el-form status-icon :model="form" v-if="activeEmail==2">
         <el-form-item label="请输入新邮箱" prop="pass">
-          <el-input type="email" v-model="form.email" autocomplete="off"></el-input>
+          <el-input type="email" v-model="form.newEmail" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -146,7 +146,7 @@
       </span>
     </el-dialog>
     <el-dialog
-        title="修改密码"
+        title="修改个人信息"
         :visible.sync="dialogUserInfoVisible"
         width="30%"
         :before-close="closeUserInfoDialog"
@@ -188,8 +188,8 @@
 
 <script>
 import axios from "axios";
-import {reqUserImg} from "../../service/api";
-import {getStore} from "../../config/global";
+import {reqCheckEmail, reqCheckVerifyCode, reqUpdateEmail, reqUserImg} from "../../service/api";
+import {getStore, setStore} from "../../config/global";
 
 export default {
   name: "PersonalSetting",
@@ -200,7 +200,7 @@ export default {
         callback(new Error('请输入密码'));
       } else {
         if (this.form.passwordCheck !== '') {
-          this.$refs.pwdForm.validateField('password_check');
+          this.$refs.pwdForm.validateField('passwordCheck');
         }
         callback();
       }
@@ -225,6 +225,7 @@ export default {
       activeEmail: 0,
       activePassword: 1,
       form: {
+        newEmail:'',
         email: '',
         verifyCode: '',
         oldPassword: '',
@@ -277,19 +278,73 @@ export default {
     uploadUserImg(){
 
     },
-    nextStepEmail(){
+    async nextStepEmail(){
       if (this.activeEmail==0) {
         //发送校验邮箱请求
-        this.activeEmail++
+        if (this.form.email != ''){
+          let params = {
+            email:this.form.email
+          }
+          const data = await reqCheckEmail(params);
+          if (new RegExp('^2.*').test(data.code)){
+            this.activeEmail++
+          }else {
+            this.$message({
+              type: 'error',
+              message: data.msg
+            });
+          }
+        }else {
+          this.$message({
+            type: 'error',
+            message: '请填写邮箱！'
+          });
+        }
+
       }else if (this.activeEmail == 1){
         //发送校验验证码请求
-        this.activeEmail++
+        if (this.form.verifyCode != ''){
+          let params = {
+            verifyCode: this.form.verifyCode
+          }
+          const data = await reqCheckVerifyCode(params);
+          if (new RegExp('^2.*').test(data.code)){
+            this.activeEmail++
+          }else {
+            this.$message({
+              type: 'error',
+              message: data.msg
+            });
+          }
+        }else {
+          this.$message({
+            type: 'error',
+            message: '请填写验证码！'
+          });
+        }
       }else {
         //发送变更请求
         //如果成功就关闭，否则就显示错误信息，不关闭弹窗。
+        if (this.form.newEmail != ''){
+          const data = await reqUpdateEmail({email:this.form.newEmail});
+          if (new RegExp('^2.*').test(data.code)){
+            console.log(JSON.stringify(data.data))
+            setStore('userInfo',JSON.stringify(data.data))
+            this.dialogEmailVisible = false;
+            this.activeEmail = 0;
+          }else {
+            this.$message({
+              type: 'error',
+              message: data.msg
+            });
+          }
+        }else {
+          this.$message({
+            type: 'error',
+            message: '请输入新邮箱！'
+          });
+        }
 
-        this.dialogEmailVisible = false;
-        this.activeEmail = 0;
       }
     },
     nextStepPassword(){

@@ -18,35 +18,181 @@
     <div class="title"><span>本龙网盘</span></div>
     <div class="login-panel">
       <div class="form">
-        <h2>登录</h2>
-        <form>
+        <div style="display:flex;">
+          <h2 @click="pageStatus = 1">登录</h2>
+<!--          <h2 @click="pageStatus = 2" style="margin-left: 10px">注册</h2>-->
+        </div>
+
+        <form v-if="pageStatus == 1">
           <div class="inputBox">
             <input type="text" placeholder="用户名" v-model="username">
+            <el-button type="text" style="margin-left: 2px" @click="registerFormStatus = true">立即注册</el-button>
           </div>
           <div class="inputBox">
             <input type="password" placeholder="密码" v-model="password">
+            <el-button type="text" style="margin-left: 2px">找回密码</el-button>
           </div>
           <div class="inputBox">
             <input type="submit" @click.prevent="toLogin" value="登录">
           </div>
         </form>
+
+<!--        <form v-if="pageStatus == 2">-->
+<!--          <div class="inputBox">-->
+<!--            <input type="text" placeholder="用户名" v-model="username">-->
+<!--          </div>-->
+<!--          <div class="inputBox">-->
+<!--            <input type="password" placeholder="密码" v-model="password">-->
+<!--          </div>-->
+<!--          <div class="inputBox">-->
+<!--            <input type="password" placeholder="再次确认" v-model="password">-->
+<!--          </div>-->
+<!--          <div class="inputBox" style="display:flex;">-->
+<!--            <input type="email" placeholder="邮箱" v-model="email">-->
+<!--            <input type="submit" @click.prevent="sendVerify" value="发送验证码" style="margin-left: 1px">-->
+<!--          </div>-->
+<!--          <div class="inputBox">-->
+<!--            <input type="submit" @click.prevent="toLogin" value="确认注册">-->
+<!--          </div>-->
+<!--        </form>-->
       </div>
     </div>
+    <el-dialog
+        title="注册"
+        :visible.sync="registerFormStatus"
+        width="400px"
+        :before-close="registerFormClose">
+      <el-form status-icon :model="registerForm" ref="registerForm" :rules="registerFormRules">
+        <el-form-item label="用户名" prop="username">
+          <el-input type="text"
+                    v-model="registerForm.username"
+                    autocomplete="off"
+                    placeholder="请输入"
+                    maxlength="10"
+                    show-word-limit
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password"
+                    v-model="registerForm.password"
+                    autocomplete="off"
+                    placeholder="请输入"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="passwordCheck">
+          <el-input type="password"
+                    v-model="registerForm.passwordCheck"
+                    autocomplete="off"
+                    placeholder="请输入"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+           <el-input type="email"
+                     v-model="registerForm.email"
+                     autocomplete="off"
+                     placeholder="请输入"
+           ></el-input>
+        </el-form-item>
+
+        <el-form-item label="验证码" prop="verifyCode">
+          <div class="modal-email-container">
+            <el-input type="text"
+                      v-model="registerForm.verifyCode"
+                      autocomplete="off"
+                      placeholder="请输入"
+                      maxlength="6"
+                      show-word-limit
+            ></el-input>
+            <el-button class="email-code" type="primary" @click="sendVerify">获取验证码</el-button>
+          </div>
+        </el-form-item>
+
+
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="registerFormClose">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+     </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {removeStore, setStore} from "../../config/global";
 
-import { reqLogin } from '../../service/api'
+import {reqEmailVerify, reqLogin} from '../../service/api'
 export default {
   name: "Login",
   data() {
+    var validatePass = (rule, value, callback) => {
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (this.registerForm.passwordCheck !== '') {
+          this.$refs.registerForm.validateField('passwordCheck');
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
     return {
+      registerForm:{
+        username: '',
+        password: '',
+        passwordCheck:'',
+        email:'',
+        verifyCode:''
+      },
+      registerFormStatus:false,
+      pageStatus:1,
       username: '',
       password: '',
       starsCount: 800, //星星数量
-      distance: 900 //间距
+      distance: 900, //间距
+      registerFormRules:{
+        verifyCode:[
+          {required: true, message: '请输入验证码', trigger: 'blur'}
+        ],
+        username:[
+          {required: true, message: '请输入用户名', trigger: 'blur'}
+        ],
+        email: [
+          {required: true, message: '请输入邮箱', trigger: 'blur'},
+          {
+            pattern:/^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g, message: "请输入正确的邮箱", trigger: "blur"
+          },
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          {
+            min: 6,
+            max: 18,
+            message: '用户密码的长度在6～18个字符',
+            trigger: 'blur'
+          },
+          {validator: validatePass, trigger: 'blur'}
+        ],
+        passwordCheck: [
+          {required: true, message: '请确认密码', trigger: 'blur'},
+          {
+            min: 6,
+            max: 18,
+            message: '用户密码的长度在6～18个字符',
+            trigger: 'blur'
+          },
+          {validator: validatePass2, trigger: 'blur'}
+        ]
+      }
     }
   },
   computed: {
@@ -66,7 +212,33 @@ export default {
       if (res.code === '200') {
         setStore('userInfo',res.data);
         this.$router.push('/dashboard');
+      }else {
+        this.$message({
+          type: 'error',
+          message: res.msg
+        });
       }
+    },
+    async sendVerify(){
+      if (this.registerForm.email != null){
+        const data = await reqEmailVerify(this.registerForm.email)
+        if (!new RegExp('^2.*').test(data.code)) {
+          this.$message({
+            type: 'error',
+            message: data.msg
+          });
+        }
+      }
+
+    },
+    registerFormClose(){
+      this.$confirm('关闭窗口后将会清除已填写的数据，确认关闭？')
+          .then(_ => {
+            this.registerFormStatus=false;
+            this.registerForm = {};
+            this.$refs.registerForm.clearValidate()
+          })
+          .catch(_ => {});
     }
   }
 }
@@ -160,6 +332,7 @@ export default {
       .form .inputBox {
         width: 100%;
         margin-top: 20px;
+        display: flex;
       }
 
       /* 输入框样式 */
@@ -198,6 +371,14 @@ export default {
         background-color: #ee9f9f;
         box-shadow: 0 0 5px #ee9f9f, 0 0 25px#ee9f9f, 0 0 50px#ee9f9f, 0 0 100px #ee9f9f;
       }
+    }
+  }
+
+  .modal-email-container {
+    display: flex;
+    .email-code {
+      margin-left: 8px;
+      height:40px;
     }
   }
 
